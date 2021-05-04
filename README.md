@@ -1,4 +1,4 @@
-<img src="/Background (2).png"></img>
+<img src="/assets/logo.png"></img>
 <hr>
 
 ## Welcome!
