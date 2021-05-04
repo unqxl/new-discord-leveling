@@ -1,0 +1,24 @@
+{
+  "name": "new-discord-leveling",
+  "version": "1.0.0",
+  "description": "Easy module to make Leveling System in Your Bot!",
+  "main": "./src/js/index.js",
+  "types": "./src/ts/index.d.ts",
+  "scripts": {
+    "test": "node ."
+  },
+  "keywords": [
+    "discord.js",
+    "leveling",
+    "new-leveling",
+    "discord",
+    "bot",
+    "easy-leveling"
+  ],
+  "author": "goose#1046",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "mongoose": "^5.12.7"
+  }
+}
