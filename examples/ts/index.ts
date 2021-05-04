@@ -6,7 +6,7 @@ const leveling = new Leveling({
 }); // [Initalize Module]
 
 // [Discord Part]
-import { Client, Intents } from 'discord.js'; // [Importing Discord.JS]
+import { Client, Intents, TextChannel, User } from 'discord.js'; // [Importing Discord.JS]
 const client = new Client({
   ws: {
     intents: Intents.ALL
@@ -37,8 +37,8 @@ client.on('message', (msg) => {
 // [Module Events | Will write 'newLevel' event]
 leveling.on('newLevel', (data) => {
   const guild = client.guilds.cache.get(data.guildID); // [Getting Guild from Data]
-  const channel = guild.channels.cache.get('id') // [Replace 'id' with Channel ID]
-  const member = guild.members.cache.get(data.userID) // [Getting Member from Data]
+  const channel = (guild.channels.cache.get('id')) as TextChannel; // [Replace 'id' with Channel ID]
+  const member = (guild.members.cache.get(data.userID)) as User; // [Getting Member from Data]
   
   return channel.send(`${member} reached **${data.level} level**!`);
 });
