@@ -15,7 +15,7 @@
 </ul>
 
 ## Examples
-<b><a href="/examples">Here's Module Examples for JavaScript and TypeScript.</a></b>
+<b><a href="./examples">Here's Module Examples for JavaScript and TypeScript.</a></b>
 
 ## Some Information
 <b>Module Creator: <a href="https://www.npmjs.com/~badboy-discord">badboy-discord</a></b><br>
