@@ -1,4 +1,4 @@
-<img src="/assets/logo.png"></img>
+<img src="https://github.com/bad-boy-discord/new-discord-leveling/blob/main/assets/logo.png?raw=true"></img>
 <hr>
 
 ## Welcome!
@@ -15,7 +15,7 @@
 </ul>
 
 ## Examples
-<b><a href="./examples">Here's Module Examples for JavaScript and TypeScript.</a></b>
+<b><a href="https://github.com/bad-boy-discord/new-discord-leveling/tree/main/examples">Here's Module Examples for JavaScript and TypeScript.</a></b>
 
 ## Some Information
 <b>Module Creator: <a href="https://www.npmjs.com/~badboy-discord">badboy-discord</a></b><br>
