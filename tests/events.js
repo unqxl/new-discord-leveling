@@ -4,6 +4,6 @@ const leveling = new Leveling({
     jsonPath: './tests/db.json'
 });
 
-leveling.on('newLevel', (data) => {
-    console.log(`User with ID ${data.userID} just reached ${data.level} level!`);
-});
+(async() => {
+    console.log(await leveling.get('545956523571150858', '826084972279365652'));
+})();
