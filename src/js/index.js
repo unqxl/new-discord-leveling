@@ -13,6 +13,7 @@ const LevelingModel = require('../models/Leveling');
 module.exports = class Leveling extends EventEmitter {
     /**
      * [Module Options]
+     * 
      * @param {object} options
      * @param {string} options.type [Type of Database]
      * @param {string} options.mongoPath [Ex: 'mongodb://localhost/mongodbtest']
@@ -29,6 +30,33 @@ module.exports = class Leveling extends EventEmitter {
 
         this.initModule();
     }
+
+    // [EventEmitter]
+
+    /**
+     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event 
+     * @param {Function} fn
+     */
+    on(event, fn) {
+        this.on(event, fn)
+    }
+    /**
+     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event 
+     * @param {Function} fn 
+     */
+    once(event, fn) {
+        this.once(event, fn)
+    }
+
+    /**
+     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event 
+     * @param {Function} fn 
+     */
+    emit(event, ...args) {
+        this.emit(event, args[0])
+    }
+
+    // [Methods]
     
     /**
      * [Adds XP to User]
