@@ -55,6 +55,14 @@ declare module 'new-discord-leveling' {
             amount: number
         ): Promise<any>;
 
+        /**
+         * [Gets User Data]
+         */
+        get(
+            memberID: string,
+            guildID: string,
+        ): Promise<UserData>;
+
         // [Private Methods]
         private createUser(
             memberID: string,
@@ -96,6 +104,13 @@ interface Options {
     mongoPath?: string;
     jsonPath?: string;
 }
+
+interface UserData {
+    memberID: string;
+    guildID: string;
+    level: number;
+    xp: number;
+};
 
 interface ModuleEvents {
     newLevel: [{

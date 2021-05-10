@@ -113,14 +113,14 @@ module.exports = class Leveling {
                                 }
                             ).exec();
         
-                            this.emit('newLevel', {
+                            events.emit('newLevel', {
                                 userID: memberID,
                                 guildID,
                                 level: Number(newUser.level + 1)
                             });
                         };
 
-                        this.emit('addXP', {
+                        events.emit('addXP', {
                             type: 'addXP',
                             userID: memberID,
                             guildID,
@@ -151,14 +151,14 @@ module.exports = class Leveling {
                         userData.level++;
                         userData.xp = 0;
         
-                        this.emit('newLevel', {
+                        events.emit('newLevel', {
                             userID: memberID,
                             guildID,
                             level: Number(userData.level)
                         });
                     };
 
-                    this.emit('addXP', {
+                    events.emit('addXP', {
                         type: 'addXP',
                         userID: memberID,
                         guildID,
@@ -220,7 +220,7 @@ module.exports = class Leveling {
                             guildID
                         });
 
-                        this.emit('subtractXP', {
+                        events.emit('subtractXP', {
                             type: 'subtractXP',
                             userID: memberID,
                             guildID,
@@ -246,7 +246,7 @@ module.exports = class Leveling {
                     
                     userData.xp -= amount;
 
-                    this.emit('subtractXP', {
+                    events.emit('subtractXP', {
                         type: 'subtractXP',
                         userID: memberID,
                         guildID,
@@ -359,7 +359,7 @@ module.exports = class Leveling {
                             guildID
                         });
 
-                        this.emit('setXP', {
+                        events.emit('setXP', {
                             type: 'setXP',
                             userID: memberID,
                             guildID,
@@ -386,7 +386,7 @@ module.exports = class Leveling {
 
                         userData.xp = Number(amount);
 
-                        this.emit('setXP', {
+                        events.emit('setXP', {
                             type: 'setXP',
                             userID: memberID,
                             guildID,
@@ -449,7 +449,7 @@ module.exports = class Leveling {
                             guildID
                         });
 
-                        this.emit('setLevel', {
+                        events.emit('setLevel', {
                             type: 'setLevel',
                             userID: memberID,
                             guildID,
@@ -476,7 +476,7 @@ module.exports = class Leveling {
 
                         userData.level = Number(amount);
 
-                        this.emit('setLevel', {
+                        events.emit('setLevel', {
                             type: 'setLevel',
                             userID: memberID,
                             guildID,
@@ -495,7 +495,56 @@ module.exports = class Leveling {
             }
         })
     }
-    
+
+    /**
+     * [Gets User Data]
+     * 
+     * @param {string} memberID 
+     * @param {string} guildID 
+     * @param {number} amount 
+     */
+    async get(memberID, guildID) {
+        if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
+
+        if(!memberID) return this.logger.error('\'memberID\' is needed for get method!');
+        if(!guildID) return this.logger.error('\'guildID\' is needed for get method!');
+        if((typeof memberID) !== 'string') return this.logger.error('\'memberID\' is not a String (get method)!');
+        if((typeof guildID) !== 'string') return this.logger.error('\'guildID\' is not a String (get method)!');
+
+        if(this.options.type === 'mongodb') {
+            return new Promise(async(res, rej) => {
+                try {
+                    const userData = await LevelingModel.findOne({
+                        memberID,
+                        guildID
+                    });
+        
+                    if(userData === null) await this.createUser(memberID, guildID);
+                    else return res(userData);
+                } catch (error) {
+                    return rej(
+                        this.logger.error(error.message)
+                    );
+                }
+            });
+        }
+        else if(this.options.type === 'json') {
+            return new Promise((res, rej) => {
+               try {
+                    const data = JSON.parse(readFileSync(this.options.jsonPath).toString());
+
+                    const userData = data.find((user) => user.guildID === guildID && user.memberID === memberID);
+                    if(!userData) this.createUserJSON(memberID, guildID);
+                    else return res(userData);
+               } catch (error) {
+                    return rej(
+                        this.logger.error(error.message)
+                    );
+               } 
+            });
+        }
+    }
+
     /**
      * [Creating User Table | MongoDB | Private]
      * 
