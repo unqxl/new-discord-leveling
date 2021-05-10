@@ -5,5 +5,5 @@ const leveling = new Leveling({
 });
 
 (async() => {
-    console.log(await leveling.get('545956523571150858', '826084972279365652'));
+    console.log(await leveling.get('545956523571150858', '826084972279365652')); // 'get' Method.
 })();
