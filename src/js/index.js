@@ -3,6 +3,8 @@ const { existsSync, writeFileSync, readFileSync } = require('fs');
 const mongoose = require('mongoose');
 const Logger = require('./Logger');
 
+const events = new EventEmitter();
+
 // [Models]
 const LevelingModel = require('../models/Leveling');
 
@@ -10,7 +12,7 @@ const LevelingModel = require('../models/Leveling');
  * @class Leveling
  * @description Main class that Enables Leveling System!
  */
-module.exports = class Leveling extends EventEmitter {
+module.exports = class Leveling {
     /**
      * [Module Options]
      * 
@@ -20,8 +22,6 @@ module.exports = class Leveling extends EventEmitter {
      * @param {string} options.jsonPath [Ex: './db/leveling.json']
      */
     constructor(options = {}) {
-        super();
-
         this.isReady = false;
         this.version = (require('../../package.json').version);
         this.options = options;
@@ -38,14 +38,14 @@ module.exports = class Leveling extends EventEmitter {
      * @param {Function} fn
      */
     on(event, fn) {
-        this.on(event, fn)
+        events.on(event, fn)
     }
     /**
      * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event 
      * @param {Function} fn 
      */
     once(event, fn) {
-        this.once(event, fn)
+        events.once(event, fn)
     }
 
     /**
@@ -53,7 +53,7 @@ module.exports = class Leveling extends EventEmitter {
      * @param {Function} fn 
      */
     emit(event, ...args) {
-        this.emit(event, args[0])
+        events.emit(event, args[0])
     }
 
     // [Methods]
