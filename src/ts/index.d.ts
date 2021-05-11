@@ -59,9 +59,15 @@ declare module 'new-discord-leveling' {
          * [Gets User Data]
          */
         get(
-            memberID: string,
             guildID: string,
         ): Promise<UserData>;
+        
+        /**
+         * [Method to get Level Leaderboard]
+         */
+        leaderboard(
+            guildID: string,
+        ): Promise<Array<UserData>>;
 
         // [Private Methods]
         private createUser(

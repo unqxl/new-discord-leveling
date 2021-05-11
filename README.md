@@ -10,7 +10,7 @@
   <li><b>JSON and MongoDB Support!</b></li>
   <li><b>Easy to Use!</b></li>
   <li><b>TypeScript Support!</b></li>
-  <li><b>7 Methods (for now)</b></li>
+  <li><b>10 Methods (for now)</b></li>
   <li><b>5 Events (for now)</b></li>
 </ul>
 
@@ -22,4 +22,5 @@
 <b>Creator Discord: <a href="https://discord.com/channels/@me">goose#1046</a></b><br>
 <b>MongoDB: <a href="https://www.mongodb.com/">Click</a></b><br>
 <b>NodeJS: <a href="https://www.nodejs.org/">Click</a></b><br>
-<b>TypeScript: <a href="https://www.typescriptlang.org/">Click</a></b>
+<b>TypeScript: <a href="https://www.typescriptlang.org/">Click</a></b><br>
+<b>Support Server <span style="color: red;">[NEW]</span>: <a href="https://discord.gg/eGZfaWsZgR">Click</a></b>

@@ -1,7 +1,6 @@
 const { EventEmitter } = require("events");
 const { existsSync, writeFileSync, readFileSync } = require('fs');
 const mongoose = require('mongoose');
-const Logger = require('./Logger');
 
 const events = new EventEmitter();
 
@@ -501,7 +500,6 @@ module.exports = class Leveling {
      * 
      * @param {string} memberID 
      * @param {string} guildID 
-     * @param {number} amount 
      */
     async get(memberID, guildID) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -541,6 +539,54 @@ module.exports = class Leveling {
                         this.logger.error(error.message)
                     );
                } 
+            });
+        }
+    }
+
+    /**
+     * [Method to get Level Leaderboard]
+     * 
+     * @param {string} guildID 
+     */
+    async leaderboard(guildID) {
+        if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
+
+        if(!guildID) return this.logger.error('\'guildID\' is needed for leaderboard method!');
+        if((typeof guildID) !== 'string') return this.logger.error('\'guildID\' is not a String (leaderboard method)!');
+
+        if(this.options.type === 'mongodb') {
+            return new Promise(async(res, rej) => {
+                try {
+                    const guildData = await LevelingModel.find({
+                        guildID
+                    });
+
+                    const sortedArray = guildData.sort((a, b) => b.level - a.level);
+                    
+                    return res(sortedArray);
+                } catch (error) {
+                    return rej(
+                        this.logger.error(error.message)
+                    );
+                }
+            });
+        }
+        else if(this.options.type === 'json') {
+            return new Promise(async(res, rej) => {
+                try {
+                    const data = JSON.parse(readFileSync(this.options.jsonPath).toString());
+
+                    const guildData = data.find((user) => user.guildID === guildID);
+                    if(!guildData) return rej(this.logger.error('Leaderboard cannot create because Server isn\'t founded in DB.'));
+                    else {
+                        const sortedArray = guildData.sort((a, b) => b.level - a.level);
+                        return res(sortedArray);
+                    };
+                } catch (error) {
+                    return rej(
+                        this.logger.error(error.message)
+                    );
+                }
             });
         }
     }
@@ -657,6 +703,8 @@ module.exports = class Leveling {
                     else {
                         this.logger.log('Connected to Database!');
                     
+                        this.isReady = true;
+
                         return this.db = mongoose;
                     };
                 })
@@ -693,6 +741,20 @@ module.exports = class Leveling {
         };
 
         this.isReady = true;
+    }
+}
+
+class Logger {
+    log(...message) {
+        return console.log(`[Leveling | ${new Date().toLocaleString()}] ${message}`)
+    }
+
+    warn(...message) {
+        return console.warn(`[Leveling | ${new Date().toLocaleString()}] ${message}`)
+    }
+
+    error(...message) {
+        return console.error(`[Leveling | ${new Date().toLocaleString()}] ${message}`)
     }
 }
 
