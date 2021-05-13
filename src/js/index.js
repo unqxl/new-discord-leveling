@@ -8,14 +8,15 @@ const events = new EventEmitter();
 const LevelingModel = require('../models/Leveling');
 
 /**
- * @class Leveling
+ * Main Class that initializing Leveling System.
+ * 
  * @description Main class that Enables Leveling System!
  */
-module.exports = class Leveling {
+class Leveling {
     /**
      * [Module Options]
      * 
-     * @param {object} options
+     * @param {object} options [Object for Options]
      * @param {string} options.type [Type of Database]
      * @param {string} options.mongoPath [Ex: 'mongodb://localhost/mongodbtest']
      * @param {string} options.jsonPath [Ex: './db/leveling.json']
@@ -33,23 +34,23 @@ module.exports = class Leveling {
     // [EventEmitter]
 
     /**
-     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event 
-     * @param {Function} fn
+     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event [Event Name]
+     * @param {Function} fn [Callback]
      */
     on(event, fn) {
         events.on(event, fn)
     }
     /**
-     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event 
-     * @param {Function} fn 
+     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event [Event Name]
+     * @param {Function} fn [Callback]
      */
     once(event, fn) {
         events.once(event, fn)
     }
 
     /**
-     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event 
-     * @param {Function} fn 
+     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event [Event Name]
+     * @param {Function} fn [Callback]
      */
     emit(event, ...args) {
         events.emit(event, args[0])
@@ -60,9 +61,11 @@ module.exports = class Leveling {
     /**
      * [Adds XP to User]
      * 
-     * @param {string} memberID 
-     * @param {string} guildID 
-     * @param {number} amount 
+     * @param {string} memberID [MemberID]
+     * @param {string} guildID [GuildID]
+     * @param {number} amount [Amount]
+     * 
+     * @returns {Promise<boolean>}
      */
     async addXP(memberID, guildID, amount) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -180,9 +183,11 @@ module.exports = class Leveling {
     /**
      * [Subtracts XP to User]
      * 
-     * @param {string} memberID 
-     * @param {string} guildID 
-     * @param {number} amount 
+     * @param {string} memberID [MemberID]
+     * @param {string} guildID [GuildID]
+     * @param {number} amount [Amount]
+     * 
+     * @returns {Promise<boolean>}
      */
     async subtractXP(memberID, guildID, amount) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -267,8 +272,10 @@ module.exports = class Leveling {
     /**
      * [XP to new Level of User]
      * 
-     * @param {string} memberID 
-     * @param {string} guildID 
+     * @param {string} memberID [MemberID]
+     * @param {string} guildID [GuildID]
+     * 
+     * @returns {Promise<number>}
      */
     async xpFor(memberID, guildID) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -318,9 +325,11 @@ module.exports = class Leveling {
     /**
      * [Sets XP to User]
      * 
-     * @param {string} memberID 
-     * @param {string} guildID 
-     * @param {number} amount 
+     * @param {string} memberID [MemberID]
+     * @param {string} guildID [GuildID]
+     * @param {number} amount [Amount]
+     * 
+     * @returns {Promise<boolean>} 
      */
     async setXP(memberID, guildID, amount) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -408,9 +417,11 @@ module.exports = class Leveling {
     /**
      * [Sets Level to User]
      * 
-     * @param {string} memberID 
-     * @param {string} guildID 
-     * @param {number} amount 
+     * @param {string} memberID [MemberID]
+     * @param {string} guildID [GuildID]
+     * @param {number} amount [Amount]
+     * 
+     * @returns {Promise<boolean>}
      */
     async setLevel(memberID, guildID, amount) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -498,8 +509,10 @@ module.exports = class Leveling {
     /**
      * [Gets User Data]
      * 
-     * @param {string} memberID 
-     * @param {string} guildID 
+     * @param {string} memberID [MemberID]
+     * @param {string} guildID [GuildID]
+     * 
+     * @returns {Promise<object>}
      */
     async get(memberID, guildID) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -546,7 +559,9 @@ module.exports = class Leveling {
     /**
      * [Method to get Level Leaderboard]
      * 
-     * @param {string} guildID 
+     * @param {string} guildID [GuildID]
+     * 
+     * @returns {Promise<Array<object>>}
      */
     async leaderboard(guildID) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -594,10 +609,11 @@ module.exports = class Leveling {
     /**
      * [Creating User Table | MongoDB | Private]
      * 
-     * @param {string} memberID 
-     * @param {string} guildID
+     * @param {string} memberID [MemberID]
+     * @param {string} guildID [GuildID]
      * 
      * @private
+     * @returns {Promise<boolean>}
      */
     async createUser(memberID, guildID) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -629,10 +645,11 @@ module.exports = class Leveling {
     /**
      * [Creating User Table | JSON | Private]
      * 
-     * @param {string} memberID 
-     * @param {string} guildID
+     * @param {string} memberID [MemberID]
+     * @param {string} guildID [GuildID]
      * 
      * @private
+     * @returns {Promise<boolean>}
      */
     async createUserJSON(memberID, guildID) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
@@ -681,6 +698,7 @@ module.exports = class Leveling {
      * [Method to Initialize Module | Private]
      * 
      * @private
+     * @returns {boolean}
      */
     async initModule() {
         if(this.options.type === 'mongodb') {
@@ -741,6 +759,7 @@ module.exports = class Leveling {
         };
 
         this.isReady = true;
+        return true;
     }
 }
 
@@ -758,16 +777,68 @@ class Logger {
     }
 }
 
+module.exports = Leveling;
+
 /**
- * Emitted when someone removed their reaction to a giveaway.
+ * Emitted when someone reached New Level!
+ * 
  * @event Leveling#newLevel
- * @param {object} data
- * @param {string} data.userID The giveaway instance
- * @param {string} data.guildID The member who remove their reaction giveaway
- * @param {number} data.level The reaction to enter the giveaway
+ * @param {object} data [Callback]
+ * @param {string} data.type [Type of Event]
+ * @param {string} data.userID [Member ID]
+ * @param {string} data.guildID [GuildID]
+ * @param {number} data.level [New Level]
  *
- * @example
- * leveling.on('newLevel', (data) => {
- *      console.log(`${data.userID} reached ${data.level} level!`)
- * });
+ */
+
+/**
+ * Emitted when Module added XP to Someone | Useless
+ * 
+ * @event Leveling#addXP
+ * @param {object} data
+ * @param {string} data.type [Type of Event]
+ * @param {string} data.userID [MemberID]
+ * @param {string} data.guildID [GuildID]
+ * @param {number} data.oldXP [oldXP]
+ * @param {number} data.newXP [newXP]
+ *
+ */
+
+/**
+ * Emitted when someone Subtract XP to Someone | Useless
+ * 
+ * @event Leveling#subtractXP
+ * @param {object} data [Callback]
+ * @param {string} data.type [Type of Event]
+ * @param {string} data.userID [MemberID]
+ * @param {string} data.guildID [GuildID]
+ * @param {number} data.oldXP [oldXP]
+ * @param {number} data.newXP [newXP]
+ *
+ */
+
+/**
+ * Emitted when someone Set XP to Someone | Useless
+ * 
+ * @event Leveling#setXP
+ * @param {object} data [Callback]
+ * @param {string} data.type [Type of Event]
+ * @param {string} data.userID [MemberID]
+ * @param {string} data.guildID [GuildID]
+ * @param {number} data.oldXP [oldXP]
+ * @param {number} data.newXP [newXP]
+ *
+ */
+
+/**
+ * Emitted when someone Set Level to Someone | Useless
+ * 
+ * @event Leveling#setLevel
+ * @param {object} data [Callback]
+ * @param {string} data.type [Type of Event]
+ * @param {string} data.userID [MemberID]
+ * @param {string} data.guildID [GuildID]
+ * @param {number} data.oldLevel [oldLevel]
+ * @param {number} data.newLevel [newLevel]
+ *
  */

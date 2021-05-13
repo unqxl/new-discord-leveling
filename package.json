@@ -1,6 +1,6 @@
 {
   "name": "new-discord-leveling",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Easy module to make Leveling System in Your Bot!",
   "main": "./src/js/index.js",
   "types": "./src/ts/index.d.ts",
@@ -12,13 +12,22 @@
     "bot",
     "easy-leveling"
   ],
+  "repository": {
+    "url": "https://github.com/bad-boy-discord/new-discord-leveling"
+  },
   "author": "goose#1046",
   "license": "MIT",
+  "scripts": {
+    "gendocs": "docgen --source src/js/index.js --custom docs/index.yml --output docs/docs.json"
+  },
   "dependencies": {
     "fs": "0.0.1-security",
     "mongoose": "^5.12.7"
   },
-  "repository": {
-    "url": "https://github.com/bad-boy-discord/new-discord-leveling"
+  "devDependencies": {
+    "discord.js-docgen": "github:discordjs/docgen#ts-patch"
+  },
+  "directories": {
+    "doc": "docs"
   }
 }
