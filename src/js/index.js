@@ -296,7 +296,8 @@ class Leveling {
                 if(userData === null) await this.createUser(memberID, guildID);
                 else {
                     try {
-                        const formula = Number(5 * Math.pow(userData.level, 2) + 50 * userData.level + 100);
+                        const nextLVL = userData.level + 1;
+                        const formula = Number(5 * Math.pow(nextLVL, 2) + 50 * nextLVL + 100);
                         const nextXP = (formula - userData.xp);
 
                         return res(Number(nextXP));
@@ -311,10 +312,11 @@ class Leveling {
             else if(this.options.type === 'json') {
                 const data = JSON.parse(readFileSync(this.options.jsonPath).toString())
                 
-               const userData = data.find((user) => user.guildID === guildID && user.memberID === memberID);
+                const userData = data.find((user) => user.guildID === guildID && user.memberID === memberID);
                 if(!userData) this.createUserJSON(memberID, guildID);
 
-                const formula = Number(5 * Math.pow(userData.level, 2) + 50 * userData.level + 100);
+                const nextLVL = userData.level + 1;
+                const formula = Number(5 * Math.pow(nextLVL, 2) + 50 * nextLVL + 100);
                 const nextXP = (formula - userData.xp);
 
                 return res(Number(nextXP));
