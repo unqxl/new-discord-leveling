@@ -1,4 +1,4 @@
-<img src="https://github.com/bad-boy-discord/new-discord-leveling/blob/main/assets/logo.png?raw=true"></img>
+<img src="https://github.com/bad-boy-discord/new-discord-leveling/blob/stable/assets/logo.png?raw=true"></img>
 <hr>
 
 ## Welcome!
