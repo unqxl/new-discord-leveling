@@ -17,17 +17,8 @@
   },
   "author": "goose#1046",
   "license": "MIT",
-  "scripts": {
-    "gendocs": "docgen --source src/js/index.js --custom docs/index.yml --output docs/docs.json"
-  },
   "dependencies": {
     "fs": "0.0.1-security",
     "mongoose": "^5.12.7"
-  },
-  "devDependencies": {
-    "discord.js-docgen": "github:discordjs/docgen#ts-patch"
-  },
-  "directories": {
-    "doc": "docs"
   }
 }
