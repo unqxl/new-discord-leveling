@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-<img src="https://raw.githubusercontent.com/bad-boy-discord/new-discord-leveling/stable/assets/logo.png"></img>
-=======
 <img src="https://github.com/bad-boy-discord/new-discord-leveling/blob/stable/assets/logo.png?raw=true"></img>
->>>>>>> b2ebbb81d78f5ad55b2780ce8635f4c4f74d8306
 <hr>
 
 ## Welcome!
@@ -28,8 +24,4 @@
 <b>NodeJS: <a href="https://www.nodejs.org/">Click</a></b><br>
 <b>TypeScript: <a href="https://www.typescriptlang.org/">Click</a></b><br>
 <b>Support Server: <a href="https://discord.gg/eGZfaWsZgR">Click</a></b><br>
-<<<<<<< HEAD
 <b>Website <span style="color: red;">[NEW]</span>: <a href="https://ndl-npm.tk/">Click</a></b>
-=======
-<b>Website: <a href="https://ndl-npm.tk">Click</a></b>
->>>>>>> b2ebbb81d78f5ad55b2780ce8635f4c4f74d8306
