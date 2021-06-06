@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+<img src="https://raw.githubusercontent.com/bad-boy-discord/new-discord-leveling/stable/assets/logo.png"></img>
+=======
 <img src="https://github.com/bad-boy-discord/new-discord-leveling/blob/stable/assets/logo.png?raw=true"></img>
+>>>>>>> b2ebbb81d78f5ad55b2780ce8635f4c4f74d8306
 <hr>
 
 ## Welcome!
@@ -15,7 +19,7 @@
 </ul>
 
 ## Examples
-<b><a href="https://github.com/bad-boy-discord/new-discord-leveling/tree/main/examples">Here's Module Examples for JavaScript and TypeScript.</a></b>
+<b><a href="https://github.com/bad-boy-discord/new-discord-leveling/tree/stable/examples">Here's Module Examples for JavaScript and TypeScript.</a></b>
 
 ## Some Information
 <b>Module Creator: <a href="https://www.npmjs.com/~badboy-discord">badboy-discord</a></b><br>
@@ -24,4 +28,8 @@
 <b>NodeJS: <a href="https://www.nodejs.org/">Click</a></b><br>
 <b>TypeScript: <a href="https://www.typescriptlang.org/">Click</a></b><br>
 <b>Support Server: <a href="https://discord.gg/eGZfaWsZgR">Click</a></b><br>
+<<<<<<< HEAD
+<b>Website <span style="color: red;">[NEW]</span>: <a href="https://ndl-npm.tk/">Click</a></b>
+=======
 <b>Website: <a href="https://ndl-npm.tk">Click</a></b>
+>>>>>>> b2ebbb81d78f5ad55b2780ce8635f4c4f74d8306

@@ -1,5 +1,6 @@
 const { EventEmitter } = require("events");
 const { existsSync, writeFileSync, readFileSync } = require('fs');
+const { Guild, User, GuildMember } = require('discord.js');
 const mongoose = require('mongoose');
 
 const events = new EventEmitter();
@@ -34,14 +35,14 @@ class Leveling {
     // [EventEmitter]
 
     /**
-     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event [Event Name]
+     * @param {'newLevel' | 'setXP' | 'setLevel'} event [Event Name]
      * @param {Function} fn [Callback]
      */
     on(event, fn) {
         events.on(event, fn)
     }
     /**
-     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event [Event Name]
+     * @param {'newLevel' | 'setXP' | 'setLevel'} event [Event Name]
      * @param {Function} fn [Callback]
      */
     once(event, fn) {
@@ -49,7 +50,7 @@ class Leveling {
     }
 
     /**
-     * @param {'newLevel' | 'addXP' | 'subtractXP' | 'setXP' | 'setLevel'} event [Event Name]
+     * @param {'newLevel' | 'setXP' | 'setLevel'} event [Event Name]
      * @param {Function} fn [Callback]
      */
     emit(event, ...args) {
@@ -61,22 +62,22 @@ class Leveling {
     /**
      * [Adds XP to User]
      * 
-     * @param {string} memberID [MemberID]
-     * @param {string} guildID [GuildID]
+     * @param {User | GuildMember} member [Discord Member]
+     * @param {Guild} guild [Discord Guild]
      * @param {number} amount [Amount]
      * 
      * @returns {Promise<boolean>}
      */
-    async addXP(memberID, guildID, amount) {
+    async addXP(member, guild, amount) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
 
-        if(!memberID) return this.logger.error('\'memberID\' is needed for addXP method!');
-        if(!guildID) return this.logger.error('\'guildID\' is needed for addXP method!');
-
-        if((typeof memberID) !== 'string') return this.logger.error('\'memberID\' is not a String (addXP method)!');
-        if((typeof guildID) !== 'string') return this.logger.error('\'guildID\' is not a String (addXP method)!');
+        if(!member) return this.logger.error('\'Discord.GuildMember | Discord.User\' is needed for addXP method!');
+        if(!guild) return this.logger.error('\'Discord.Guild\' is needed for addXP method!');
 
         return new Promise(async(res, rej) => {
+            const memberID = member.id;
+            const guildID = guild.id;
+
             if(this.options.type === 'mongodb') {
                 try {
                     const userData = await LevelingModel.findOne({
@@ -116,19 +117,11 @@ class Leveling {
                             ).exec();
         
                             events.emit('newLevel', {
-                                userID: memberID,
+                                memberID,
                                 guildID,
                                 level: Number(newUser.level + 1)
                             });
                         };
-
-                        events.emit('addXP', {
-                            type: 'addXP',
-                            userID: memberID,
-                            guildID,
-                            oldXP: Number(userData.xp),
-                            newXP: Number(newUser.xp),
-                        });
                     }
 
                     return res(true);
@@ -159,17 +152,8 @@ class Leveling {
                             level: Number(userData.level)
                         });
                     };
-
-                    events.emit('addXP', {
-                        type: 'addXP',
-                        userID: memberID,
-                        guildID,
-                        oldXP: Number(userData.xp - amount),
-                        newXP: Number(userData.xp),
-                    });
                     
                     writeFileSync(this.options.jsonPath, JSON.stringify(data, null, '\t'));
-
                     return res(true);
                 } catch (error) {
                     rej(
@@ -183,22 +167,22 @@ class Leveling {
     /**
      * [Subtracts XP to User]
      * 
-     * @param {string} memberID [MemberID]
-     * @param {string} guildID [GuildID]
+     * @param {User | GuildMember} member [Discord Member]
+     * @param {Guild} guild [Discord Guild]
      * @param {number} amount [Amount]
      * 
      * @returns {Promise<boolean>}
      */
-    async subtractXP(memberID, guildID, amount) {
+    async subtractXP(member, guild, amount) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
 
-        if(!memberID) return this.logger.error('\'memberID\' is needed for subtractXP method!');
-        if(!guildID) return this.logger.error('\'guildID\' is needed for subtractXP method!');
-
-        if((typeof memberID) !== 'string') return this.logger.error('\'memberID\' is not a String (subtractXP method)!');
-        if((typeof guildID) !== 'string') return this.logger.error('\'guildID\' is not a String (subtractXP method)!');
+        if(!member) return this.logger.error('\'Discord.GuildMember | Discord.User\' is needed for subtractXP method!');
+        if(!guild) return this.logger.error('\'Discord.Guild\' is needed for subtractXP method!');
 
         return new Promise(async(res, rej) => {
+            const memberID = member.id;
+            const guildID = guild.id;
+
             if(this.options.type === 'mongodb') {
                 try {
                     const userData = await LevelingModel.findOne({
@@ -218,19 +202,6 @@ class Leveling {
                                 xp: Number(userData.xp - amount),
                             }
                         ).exec();
-
-                        const newUser = await LevelingModel.findOne({
-                            memberID,
-                            guildID
-                        });
-
-                        events.emit('subtractXP', {
-                            type: 'subtractXP',
-                            userID: memberID,
-                            guildID,
-                            oldXP: Number(userData.xp),
-                            newXP: Number(newUser.xp),
-                        });
         
                         return res(true);
                     }
@@ -250,14 +221,6 @@ class Leveling {
                     
                     userData.xp -= amount;
 
-                    events.emit('subtractXP', {
-                        type: 'subtractXP',
-                        userID: memberID,
-                        guildID,
-                        oldXP: Number(userData.xp + amount),
-                        newXP: Number(newUser.xp),
-                    });
-
                     writeFileSync(this.options.jsonPath, JSON.stringify(data, null, '\t'));
                     return res(true);
                 } catch (error) {
@@ -270,23 +233,27 @@ class Leveling {
     }
 
     /**
-     * [XP to new Level of User]
+     * [XP to New Level of User]
      * 
-     * @param {string} memberID [MemberID]
-     * @param {string} guildID [GuildID]
+     * @param {User | GuildMember} member [Discord Member]
+     * @param {Guild} guild [Discord Guild]
+     * @param {number} level
      * 
      * @returns {Promise<number>}
      */
-    async xpFor(memberID, guildID) {
+    async xpFor(member, guild, level) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
 
-        if(!memberID) return this.logger.error('\'memberID\' is needed for xpFor method!');
-        if(!guildID) return this.logger.error('\'guildID\' is needed for xpFor method!');
+        if(!member) return this.logger.error('\'Discord.GuildMember | Discord.User\' is needed for xpFor method!');
+        if(!guild) return this.logger.error('\'Discord.Guild\' is needed for xpFor method!');
+        if(!level) return this.logger.error('\'level\' is needed for xpFor method!');
 
-        if((typeof memberID) !== 'string') return this.logger.error('\'memberID\' is not a String (xpFor method)!');
-        if((typeof guildID) !== 'string') return this.logger.error('\'guildID\' is not a String (xpFor method)!');
+        if((typeof level) !== 'number') return this.logger.error('\'level\' is not a Number (xpFor Method)!');
 
         return new Promise(async(res, rej) => {
+            const memberID = member.id;
+            const guildID = guild.id;
+
             if(this.options.type === 'mongodb') {
                 const userData = await LevelingModel.findOne({
                     memberID,
@@ -296,12 +263,12 @@ class Leveling {
                 if(userData === null) await this.createUser(memberID, guildID);
                 else {
                     try {
-                        const nextLVL = userData.level + 1;
-                        const formula = Number(5 * Math.pow(nextLVL, 2) + 50 * nextLVL + 100);
+                        if(userData.level > level) return this.logger.warn(`User Level (${userData.level}) is more than ${level} level!`);
+
+                        const formula = Number(5 * Math.pow(level, 2) + 50 * level + 100);
                         const nextXP = (formula - userData.xp);
 
                         return res(Number(nextXP));
-                        
                     } catch (error) {
                         return rej(
                             this.logger.error(error.message)
@@ -315,8 +282,9 @@ class Leveling {
                 const userData = data.find((user) => user.guildID === guildID && user.memberID === memberID);
                 if(!userData) this.createUserJSON(memberID, guildID);
 
-                const nextLVL = userData.level + 1;
-                const formula = Number(5 * Math.pow(nextLVL, 2) + 50 * nextLVL + 100);
+                if(userData.level > level) return this.logger.warn(`User Level (${userData.level}) is more than ${level} level!`);
+
+                const formula = Number(5 * Math.pow(level, 2) + 50 * level + 100);
                 const nextXP = (formula - userData.xp);
 
                 return res(Number(nextXP));
@@ -327,24 +295,25 @@ class Leveling {
     /**
      * [Sets XP to User]
      * 
-     * @param {string} memberID [MemberID]
-     * @param {string} guildID [GuildID]
+     * @param {User | GuildMember} member [Discord Member]
+     * @param {Guild} guild [Discord Guild]
      * @param {number} amount [Amount]
      * 
      * @returns {Promise<boolean>} 
      */
-    async setXP(memberID, guildID, amount) {
+    async setXP(member, guild, amount) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
 
-        if(!memberID) return this.logger.error('\'memberID\' is needed for setXP method!');
-        if(!guildID) return this.logger.error('\'guildID\' is needed for setXP method!');
+        if(!member) return this.logger.error('\'Discord.GuildMember | Discord.User\' is needed for setXP method!');
+        if(!guild) return this.logger.error('\'Discord.Guild\' is needed for setXP method!');
         if(!amount) return this.logger.error('\'amount\' is needed for setXP method!');
 
-        if((typeof memberID) !== 'string') return this.logger.error('\'memberID\' is not a String (setXP method)!');
-        if((typeof guildID) !== 'string') return this.logger.error('\'guildID\' is not a String (setXP method)!');
         if((typeof amount) !== 'number') return this.logger.error('\'amount\' is not a Number (setXP method)!');
 
         return new Promise(async(res, rej) => {
+            const memberID = member.id;
+            const guildID = guild.id;
+
             if(this.options.type === 'mongodb') {
                 try {
                     const userData = await LevelingModel.findOne({
@@ -371,7 +340,7 @@ class Leveling {
 
                         events.emit('setXP', {
                             type: 'setXP',
-                            userID: memberID,
+                            memberID,
                             guildID,
                             oldXP: Number(userData.xp),
                             newXP: Number(newUser.xp),
@@ -398,7 +367,7 @@ class Leveling {
 
                         events.emit('setXP', {
                             type: 'setXP',
-                            userID: memberID,
+                            memberID,
                             guildID,
                             oldXP,
                             newXP: Number(newUser.xp),
@@ -419,24 +388,25 @@ class Leveling {
     /**
      * [Sets Level to User]
      * 
-     * @param {string} memberID [MemberID]
-     * @param {string} guildID [GuildID]
+     * @param {User | GuildMember} member [Discord Member]
+     * @param {Guild} guild [Discord Guild]
      * @param {number} amount [Amount]
      * 
      * @returns {Promise<boolean>}
      */
-    async setLevel(memberID, guildID, amount) {
+    async setLevel(member, guild, amount) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
 
-        if(!memberID) return this.logger.error('\'memberID\' is needed for setXP method!');
-        if(!guildID) return this.logger.error('\'guildID\' is needed for setXP method!');
+        if(!member) return this.logger.error('\'Discord.GuildMember | Discord.User\' is needed for setLevel method!');
+        if(!guild) return this.logger.error('\'Discord.Guild\' is needed for setLevel method!');
         if(!amount) return this.logger.error('\'amount\' is needed for setXP method!');
 
-        if((typeof memberID) !== 'string') return this.logger.error('\'memberID\' is not a String (setXP method)!');
-        if((typeof guildID) !== 'string') return this.logger.error('\'guildID\' is not a String (setXP method)!');
         if((typeof amount) !== 'number') return this.logger.error('\'amount\' is not a Number (setXP method)!');
 
         return new Promise(async(res, rej) => {
+            const memberID = member.id;
+            const guildID = guild.id;
+
             if(this.options.type === 'mongodb') {
                 try {
                     const userData = await LevelingModel.findOne({
@@ -463,7 +433,7 @@ class Leveling {
 
                         events.emit('setLevel', {
                             type: 'setLevel',
-                            userID: memberID,
+                            memberID,
                             guildID,
                             oldLevel: Number(userData.level),
                             newLevel: Number(newUser.level),
@@ -490,7 +460,7 @@ class Leveling {
 
                         events.emit('setLevel', {
                             type: 'setLevel',
-                            userID: memberID,
+                            memberID,
                             guildID,
                             oldLevel,
                             newLevel: Number(userData.level),
@@ -511,21 +481,22 @@ class Leveling {
     /**
      * [Gets User Data]
      * 
-     * @param {string} memberID [MemberID]
-     * @param {string} guildID [GuildID]
+     * @param {User | GuildMember} member [Discord Member]
+     * @param {Guild} guild [Discord Guild]
      * 
      * @returns {Promise<object>}
      */
-    async get(memberID, guildID) {
+    async get(member, guild) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
 
-        if(!memberID) return this.logger.error('\'memberID\' is needed for get method!');
-        if(!guildID) return this.logger.error('\'guildID\' is needed for get method!');
-        if((typeof memberID) !== 'string') return this.logger.error('\'memberID\' is not a String (get method)!');
-        if((typeof guildID) !== 'string') return this.logger.error('\'guildID\' is not a String (get method)!');
+        if(!member) return this.logger.error('\'Discord.GuildMember | Discord.User\' is needed for get method!');
+        if(!guild) return this.logger.error('\'Discord.Guild\' is needed for get method!');
 
-        if(this.options.type === 'mongodb') {
-            return new Promise(async(res, rej) => {
+        return new Promise(async(res, rej) => {
+            const memberID = member.id;
+            const guildID = guild.id;
+
+            if(this.options.type === 'mongodb') {
                 try {
                     const userData = await LevelingModel.findOne({
                         memberID,
@@ -539,45 +510,42 @@ class Leveling {
                         this.logger.error(error.message)
                     );
                 }
-            });
-        }
-        else if(this.options.type === 'json') {
-            return new Promise((res, rej) => {
-               try {
+            }
+            else if(this.options.type === 'json') {
+                try {
                     const data = JSON.parse(readFileSync(this.options.jsonPath).toString());
-
                     const userData = data.find((user) => user.guildID === guildID && user.memberID === memberID);
+
                     if(!userData) this.createUserJSON(memberID, guildID);
                     else return res(userData);
-               } catch (error) {
+                } catch (error) {
                     return rej(
                         this.logger.error(error.message)
                     );
-               } 
-            });
-        }
+                } 
+            } 
+        });
     }
 
     /**
      * [Method to get Level Leaderboard]
      * 
-     * @param {string} guildID [GuildID]
+     * @param {Guild} guild [Discord Guild]
      * 
-     * @returns {Promise<Array<object>>}
+     * @returns {Promise<Array>}
      */
-    async leaderboard(guildID) {
+    async leaderboard(guild) {
         if(!this.isReady) return this.logger.error('Module isn\'t loaded!');
 
-        if(!guildID) return this.logger.error('\'guildID\' is needed for leaderboard method!');
-        if((typeof guildID) !== 'string') return this.logger.error('\'guildID\' is not a String (leaderboard method)!');
+        if(!guild) return this.logger.error('\'guildID\' is needed for leaderboard method!');
 
-        if(this.options.type === 'mongodb') {
-            return new Promise(async(res, rej) => {
+        return new Promise(async(res, rej) => {
+            if(this.options.type === 'mongodb') {
                 try {
                     const guildData = await LevelingModel.find({
                         guildID
                     });
-
+    
                     const sortedArray = guildData.sort((a, b) => b.level - a.level);
                     
                     return res(sortedArray);
@@ -586,15 +554,13 @@ class Leveling {
                         this.logger.error(error.message)
                     );
                 }
-            });
-        }
-        else if(this.options.type === 'json') {
-            return new Promise(async(res, rej) => {
+            }
+            else if(this.options.type === 'json') {
                 try {
                     const data = JSON.parse(readFileSync(this.options.jsonPath).toString());
 
-                    const guildData = data.find((user) => user.guildID === guildID);
-                    if(!guildData) return rej(this.logger.error('Leaderboard cannot create because Server isn\'t founded in DB.'));
+                    const guildData = data.filter((guild) => guild.guildID === guildID);
+                    if(!guildData) return rej(this.logger.error('Leaderboard cannot be created because Server isn\'t founded in DB.'));
                     else {
                         const sortedArray = guildData.sort((a, b) => b.level - a.level);
                         return res(sortedArray);
@@ -604,15 +570,15 @@ class Leveling {
                         this.logger.error(error.message)
                     );
                 }
-            });
-        }
+            } 
+        });
     }
 
     /**
      * [Creating User Table | MongoDB | Private]
      * 
-     * @param {string} memberID [MemberID]
-     * @param {string} guildID [GuildID]
+     * @param {string} memberID [Discord MemberID]
+     * @param {string} guildID [Discord GuildID]
      * 
      * @private
      * @returns {Promise<boolean>}
@@ -647,8 +613,8 @@ class Leveling {
     /**
      * [Creating User Table | JSON | Private]
      * 
-     * @param {string} memberID [MemberID]
-     * @param {string} guildID [GuildID]
+     * @param {string} memberID [Discord MemberID]
+     * @param {string} guildID [Discord GuildID]
      * 
      * @private
      * @returns {Promise<boolean>}
@@ -787,35 +753,9 @@ module.exports = Leveling;
  * @event Leveling#newLevel
  * @param {object} data [Callback]
  * @param {string} data.type [Type of Event]
- * @param {string} data.userID [Member ID]
+ * @param {string} data.memberID [Member ID]
  * @param {string} data.guildID [GuildID]
  * @param {number} data.level [New Level]
- *
- */
-
-/**
- * Emitted when Module added XP to Someone | Useless
- * 
- * @event Leveling#addXP
- * @param {object} data
- * @param {string} data.type [Type of Event]
- * @param {string} data.userID [MemberID]
- * @param {string} data.guildID [GuildID]
- * @param {number} data.oldXP [oldXP]
- * @param {number} data.newXP [newXP]
- *
- */
-
-/**
- * Emitted when someone Subtract XP to Someone | Useless
- * 
- * @event Leveling#subtractXP
- * @param {object} data [Callback]
- * @param {string} data.type [Type of Event]
- * @param {string} data.userID [MemberID]
- * @param {string} data.guildID [GuildID]
- * @param {number} data.oldXP [oldXP]
- * @param {number} data.newXP [newXP]
  *
  */
 
@@ -825,7 +765,7 @@ module.exports = Leveling;
  * @event Leveling#setXP
  * @param {object} data [Callback]
  * @param {string} data.type [Type of Event]
- * @param {string} data.userID [MemberID]
+ * @param {string} data.memberID [MemberID]
  * @param {string} data.guildID [GuildID]
  * @param {number} data.oldXP [oldXP]
  * @param {number} data.newXP [newXP]
@@ -838,7 +778,7 @@ module.exports = Leveling;
  * @event Leveling#setLevel
  * @param {object} data [Callback]
  * @param {string} data.type [Type of Event]
- * @param {string} data.userID [MemberID]
+ * @param {string} data.memberID [MemberID]
  * @param {string} data.guildID [GuildID]
  * @param {number} data.oldLevel [oldLevel]
  * @param {number} data.newLevel [newLevel]

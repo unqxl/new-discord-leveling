@@ -24,13 +24,13 @@ client.on('message', (msg) => {
   
   const randomXP = Math.ceil(Math.random() * 11) + 1; // [Generating Random Number for XP]
   
-  leveling.addXP(msg.author.id, msg.guild.id, Number(randomXP)); // [Adding XP]
+  leveling.addXP(msg.author, msg.guild, Number(randomXP)); // [Adding XP]
   
-  const args = message.content.slice('?'.length).trim().split(' ');
+  const args = msg.content.slice('?'.length).trim().split(' ');
   const command = args.shift().toLowerCase();
   
   if(command === 'ping') {
-    return message.channel.send(`🏓 Pong!\n${client.ws.ping} ms!`);
+    return msg.channel.send(`🏓 Pong!\n${client.ws.ping} ms!`);
   };
 });
 
@@ -38,10 +38,12 @@ client.on('message', (msg) => {
 leveling.on('newLevel', (data) => {
   const guild = client.guilds.cache.get(data.guildID); // [Getting Guild from Data]
   const channel = guild.channels.cache.get('id') // [Replace 'id' with Channel ID]
-  const member = guild.members.cache.get(data.userID) // [Getting Member from Data]
+  const member = guild.members.cache.get(data.memberID) // [Getting Member from Data]
   
   return channel.send(`${member} reached **${data.level} level**!`);
+  // If You Want to send Message to Member, use this code:
+  // return member?.send(`Congradulations, You reached **${data.newLevel} level**!`);
 });
 
 // [Running Client]
-client.login('bottoken') // [https://discord.com/developers/applications]
+client.login('super-duper-bot-token') // [https://discord.com/developers/applications]

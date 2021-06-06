@@ -1,5 +1,6 @@
 declare module 'new-discord-leveling' {
     import { EventEmitter } from 'events';
+    import { User, Guild, GuildMember } from 'discord.js';
 
     class Leveling extends EventEmitter {
         public isReady: boolean;
@@ -15,70 +16,71 @@ declare module 'new-discord-leveling' {
          * [Adds XP to User]
          */
         addXP(
-            memberID: string,
-            guildID: string,
+            member: (User | GuildMember),
+            guild: Guild,
             amount: number
-        ): Promise<any>;
+        ): Promise<boolean>;
 
         /**
          * [Subtracts XP to User]
          */
         subtractXP(
-            memberID: string,
-            guildID: string,
+            member: (User | GuildMember),
+            guild: Guild,
             amount: number
-        ): Promise<any>;
+        ): Promise<boolean>;
 
         /**
          * [XP to new Level of User]
          */
         xpFor(
-            memberID: string,
-            guildID: string,
+            member: (User | GuildMember),
+            guild: Guild,
         ): Promise<number>;
 
         /**
          * [Sets XP to User]
          */
         setXP(
-            memberID: string,
-            guildID: string,
+            member: (User | GuildMember),
+            guild: Guild,
             amount: number
-        ): Promise<any>;
+        ): Promise<boolean>;
 
         /**
          * [Sets Level to User]
          */
         setLevel(
-            memberID: string,
-            guildID: string,
+            member: (User | GuildMember),
+            guild: Guild,
             amount: number
-        ): Promise<any>;
+        ): Promise<boolean>;
 
         /**
          * [Gets User Data]
          */
         get(
-            guildID: string,
+            member: (User | GuildMember),
+            guild: Guild,
         ): Promise<UserData>;
         
         /**
          * [Method to get Level Leaderboard]
          */
         leaderboard(
-            guildID: string,
+            guild: Guild,
         ): Promise<Array<UserData>>;
 
         // [Private Methods]
         private createUser(
-            memberID: string,
-            guildID: string,
-        ): Promise<any>;
+            member: (User | GuildMember),
+            guild: Guild,
+        ): Promise<boolean>;
 
         private createUserJSON(
-            memberID: string,
-            guildID: string,
-        ): Promise<any>;
+            member: (User | GuildMember),
+            guild: Guild,
+        ): Promise<boolean>;
 
         // [Events]
         public on<K extends keyof ModuleEvents>(
@@ -94,14 +96,16 @@ declare module 'new-discord-leveling' {
         public emit<K extends keyof ModuleEvents>(event: K, ...args: ModuleEvents[K]): boolean;
     }
     
+    // [Logger]
     class Logger {
         log(...message: any[]): any;
         warn(...message: any[]): any;
         error(...message: any[]): any;
     }
-
+    
+    // [Exporting]
+    
     namespace Leveling {}
-
     export = Leveling;
 }
 
@@ -116,35 +120,19 @@ interface UserData {
     guildID: string;
     level: number;
     xp: number;
-};
+}
 
 interface ModuleEvents {
     newLevel: [{
         type: 'newLevel';
-        userID: string;
+        memberID: string;
         guildID: string;
         level: number;
     }];
 
-    addXP: [{
-        type: 'addXP';
-        userID: string;
-        guildID: string;
-        oldXP: number;
-        newXP: number;
-    }];
-
-    subtractXP: [{
-        type: 'subtractXP';
-        userID: string;
-        guildID: string;
-        oldXP: number;
-        newXP: number;
-    }];
-
     setXP: [{
         type: 'setXP';
-        userID: string;
+        memberID: string;
         guildID: string;
         oldXP: number;
         newXP: number;
@@ -152,7 +140,7 @@ interface ModuleEvents {
 
     setLevel: [{
         type: 'setLevel';
-        userID: string;
+        memberID: string;
         guildID: string;
         oldXP: number;
         newXP: number;
