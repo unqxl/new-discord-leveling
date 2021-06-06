@@ -9,9 +9,9 @@
 <ul>
   <li><b>JSON and MongoDB Support!</b></li>
   <li><b>Easy to Use!</b></li>
-  <li><b>TypeScript Support!</b></li>
+  <li><b>Full TypeScript Support!</b></li>
   <li><b>10 Methods (for now)</b></li>
-  <li><b>5 Events (for now)</b></li>
+  <li><b>3 Events</b></li>
 </ul>
 
 ## Examples
