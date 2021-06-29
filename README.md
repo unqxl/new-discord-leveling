@@ -24,4 +24,4 @@
 <b>NodeJS: <a href="https://www.nodejs.org/">Click</a></b><br>
 <b>TypeScript: <a href="https://www.typescriptlang.org/">Click</a></b><br>
 <b>Support Server: <a href="https://discord.gg/eGZfaWsZgR">Click</a></b><br>
-<b>Website <span style="color: red;">[NEW]</span>: <a href="https://ndl-npm.tk/">Click</a></b>
+<b>Website: <a href="https://ndl-npm.tk/">Click</a></b>
