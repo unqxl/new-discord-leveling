@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "checkJs": false,
+    "outDir": "dist",
+    "sourceMap": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "declaration": false
+  },
+
+  "include": ["src"],
+  "exclude": ["node_modules", ".vscode", "assets", "examples", "tests"]
+}

@@ -1,26 +1,29 @@
 {
   "name": "new-discord-leveling",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "Easy module to make Leveling System in Your Bot!",
-  "main": "./src/js/index.js",
-  "types": "./src/ts/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./types/Leveling.d.ts",
   "keywords": [
-    "discord.js",
+    "discord-js",
+    "discord-js-economy",
     "leveling",
     "new-leveling",
-    "discord",
-    "bot",
-    "easy-leveling"
+    "discord"
   ],
   "repository": {
     "url": "https://github.com/bad-boy-discord/new-discord-leveling"
   },
-  "author": "goose#1046",
+  "author": "WhyMe#1126",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^12.5.3",
-    "events": "^3.3.0",
-    "fs": "0.0.1-security",
-    "mongoose": "^5.12.7"
+    "chalk": "4.1.2",
+    "enmap": "^5.8.8",
+    "tiny-typed-emitter": "^2.1.0"
+  },
+  "peerDependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.6.0"
   }
 }
