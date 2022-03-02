@@ -1,9 +1,12 @@
 {
   "name": "new-discord-leveling",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Easy module to make Leveling System in Your Bot!",
   "main": "./dist/index.js",
   "types": "./types/Leveling.d.ts",
+  "scripts": {
+    "preinstall": "tsc -p tsconfig.json"
+  },
   "keywords": [
     "discord-js",
     "discord-js-economy",
@@ -22,7 +25,9 @@
     "tiny-typed-emitter": "^2.1.0"
   },
   "peerDependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "typescript": "^4.6.2"
+  },
   "engines": {
     "node": ">=16.6.0"
   }
