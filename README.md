@@ -1,3 +1,7 @@
+## Note
+<strong>This module is currently obsolete.</strong> <br />
+<strong>Please use "@djs-modules/leveling" instead.</strong>
+
 ## Welcome!
 
 <strong>[Upgrading to 2.0.0](./UPGRADING.md)</strong>
